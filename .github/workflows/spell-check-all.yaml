@@ -11,9 +11,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - uses: streetsidesoftware/cspell-action@v2
+      - uses: streetsidesoftware/cspell-action@v1
         with:
-          config: https://raw.githubusercontent.com/tier4/autoware-spell-check-dict/main/cspell/.cspell.json
-          files: "**"
+          config: ".github/workflows/cspell.json"
+          files: |
+            **/*.{c,cpp,h,hpp,xml,yaml,yml,md,txt,sh,repos,py}
           incremental_files_only: false
-          strict: true
+          strict: false
