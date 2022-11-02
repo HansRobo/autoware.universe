@@ -14,5 +14,6 @@ jobs:
       - uses: streetsidesoftware/cspell-action@v1
         with:
           config: .github/workflows/cspell.json
+          files: ''
           incremental_files_only: false
           strict: true
