@@ -11,16 +11,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # - name: Retrieve spell check dictionary
-      #   run: |
-      #     curl --silent --show-error \
-      #       --output .github/workflows/cspell.json \
-      #       https://raw.githubusercontent.com/tier4/autoware-spell-check-dict/main/.cspell.json
-
       - uses: streetsidesoftware/cspell-action@v1
         with:
-          config: ".github/workflows/cspell.json"
-          files: |
-            **/*.{c,cpp,h,hpp,xml,yaml,yml,md,txt,sh,repos,py}
+          config: .github/workflows/cspell.json
           incremental_files_only: false
           strict: true
