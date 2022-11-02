@@ -13,7 +13,7 @@ jobs:
 
       - uses: streetsidesoftware/cspell-action@v2
         with:
-          config: .github/workflows/cspell.json
+          config: https://raw.githubusercontent.com/tier4/autoware-spell-check-dict/main/cspell/.cspell.json
           files: "**"
           incremental_files_only: false
           strict: true
