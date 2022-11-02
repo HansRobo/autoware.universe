@@ -11,7 +11,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - uses: streetsidesoftware/cspell-action@v1
+      - uses: streetsidesoftware/cspell-action@v2
         with:
           config: .github/workflows/cspell.json
           files: "**"
