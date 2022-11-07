@@ -63,10 +63,10 @@ bool is_aligned(const Heading a, const Heading b, const Real dot_threshold)
     throw std::domain_error{"Dot product threshold cannot be negative"};
   }
   const auto dot = (a.real * b.real) + (a.imag * b.imag);
-  const auto amag = std::sqrt((a.real * a.real) + (a.imag * a.imag));
-  const auto bmag = std::sqrt((b.real * b.real) + (b.imag * b.imag));
+  const auto a_mag = std::sqrt((a.real * a.real) + (a.imag * a.imag));
+  const auto b_mag = std::sqrt((b.real * b.real) + (b.imag * b.imag));
   const auto thresh = std::min(dot_threshold, Real{1.0});
-  return (dot / (amag * bmag)) > thresh;
+  return (dot / (a_mag * b_mag)) > thresh;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
