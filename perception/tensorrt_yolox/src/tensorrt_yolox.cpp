@@ -61,7 +61,7 @@ TrtYoloX::TrtYoloX(
       break;
     default:
       std::stringstream s;
-      s << "\"" << model_path << "\" is unsuppoerted format";
+      s << "\"" << model_path << "\" is unsupported format";
       std::runtime_error{s.str()};
   }
 
@@ -227,6 +227,7 @@ void TrtYoloX::decodeOutputs(
   qsortDescentInplace(proposals);
 
   std::vector<int> picked;
+  // cspell: ignore Bboxes
   nmsSortedBboxes(proposals, picked, nms_threshold_);
 
   int count = static_cast<int>(picked.size());

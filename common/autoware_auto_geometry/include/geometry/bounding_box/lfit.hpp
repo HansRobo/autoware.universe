@@ -18,6 +18,8 @@
 /// \brief This file implements 2D pca on a linked list of points to estimate an oriented
 ///        bounding box
 
+// cspell: ignore LFIT, lfit
+
 #ifndef GEOMETRY__BOUNDING_BOX__LFIT_HPP_
 #define GEOMETRY__BOUNDING_BOX__LFIT_HPP_
 
@@ -117,8 +119,8 @@ float32_t solve_lfit(const LFitWs & ws, PointT & dir)
                        ws.m22d - (((ws.m12b * ws.m12b) * pi) + ((ws.m12d * ws.m12d) * qi)),
                        ws.m22b - (((ws.m12a * ws.m12b) * pi) + ((ws.m12c * ws.m12d) * qi)), 0UL};
   PointT eig1;
-  const auto eigv = eig_2d(M, eig1, dir);
-  return eigv.second;
+  const auto eig_v = eig_2d(M, eig1, dir);
+  return eig_v.second;
 }
 
 /// \brief Increments L fit M matrix with information in the point
@@ -207,11 +209,11 @@ BoundingBox lfit_bounding_box_2d_impl(const IT begin, const IT end, const std::s
     }
   }
   // can recover best corner point, but don't care, need to cover all points
-  const auto inorm = 1.0F / norm_2d(best_normal);
-  if (!std::isnormal(inorm)) {
+  const auto inv_norm = 1.0F / norm_2d(best_normal);
+  if (!std::isnormal(inv_norm)) {
     throw std::runtime_error{"LFit: Abnormal norm"};
   }
-  best_normal = times_2d(best_normal, inorm);
+  best_normal = times_2d(best_normal, inv_norm);
   auto best_tangent = get_normal(best_normal);
   // find extreme points
   Point4<IT> supports;
