@@ -155,9 +155,9 @@ void RRTStar::setRRTPath(const std::vector<rrtstar_core::Pose> & waypoints)
     } else {
       const auto & pt_now = waypoints.at(i);
       const auto & pt_next = waypoints.at(i + 1);
-      const double inpro =
+      const double inner_product =
         cos(pt_now.yaw) * (pt_next.x - pt_now.x) + sin(pt_now.yaw) * (pt_next.y - pt_now.y);
-      pw.is_back = (inpro < 0.0);
+      pw.is_back = (inner_product < 0.0);
     }
     pw.pose = pose;
     waypoints_.waypoints.push_back(pw);
