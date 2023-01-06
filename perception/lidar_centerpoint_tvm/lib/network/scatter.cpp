@@ -62,6 +62,7 @@ void scatterFeatures_worker(
   }
 }
 
+// cspell: ignore divup
 void scatterFeatures(
   const std::vector<float> & pillar_features, const std::vector<int32_t> & coords,
   const std::size_t num_pillars, const CenterPointConfig & config,
