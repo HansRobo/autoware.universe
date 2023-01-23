@@ -119,7 +119,7 @@ TEST(ConverterTests, LoadValidPath)
   // for invalid maps
   EXPECT_FALSE(accel_map.readAccelMapFromCSV(map_path + "test_1col_map.csv"));
   EXPECT_FALSE(accel_map.readAccelMapFromCSV(map_path + "test_inconsistent_rows_map.csv"));
-  EXPECT_FALSE(accel_map.readAccelMapFromCSV(map_path + "test_not_interpolable.csv"));
+  EXPECT_FALSE(accel_map.readAccelMapFromCSV(map_path + "test_not_interpolatable.csv"));
 }
 
 TEST(ConverterTests, AccelMapCalculation)
