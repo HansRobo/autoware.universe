@@ -184,6 +184,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--concat", action="store_true", help="concat png images (requires imagemagick)"
     )
+
     args = parser.parse_args()
     concat = args.concat
 
