@@ -408,7 +408,9 @@ void BehaviorPathPlannerNode::run()
     // Reset behavior tree when new route is received,
     // so that the each modules do not have to care about the "route jump".
     if (!is_first_time && !has_same_route_id) {
+      RCLCPP_INFO(get_logger(), "New uuid route is received. Resetting modules.");
       planner_manager_->reset();
+      planner_data_->prev_modified_goal.reset();
     }
   }
 
@@ -549,18 +551,14 @@ void BehaviorPathPlannerNode::publish_steering_factor(
   steering_factor_interface_ptr_->publishSteeringFactor(get_clock()->now());
 }
 
-void BehaviorPathPlannerNode::publish_reroute_availability()
+void BehaviorPathPlannerNode::publish_reroute_availability() const
 {
-  const bool has_approved_modules = planner_manager_->hasApprovedModules();
-  const bool has_candidate_modules = planner_manager_->hasCandidateModules();
-
-  // In the current behavior path planner, we might get unexpected behavior when rerouting while
-  // modules other than lane follow are active. Therefore, rerouting will be allowed only when the
-  // lane follow module is running Note that if there is a approved module or candidate module, it
-  // means non-lane-following modules are runnning.
+  // In the current behavior path planner, we might encounter unexpected behavior when rerouting
+  // while modules other than lane following are active. If non-lane-following module except
+  // always-executable module is approved and running, rerouting will not be　possible.
   RerouteAvailability is_reroute_available;
   is_reroute_available.stamp = this->now();
-  if (has_approved_modules || has_candidate_modules) {
+  if (planner_manager_->hasNonAlwaysExecutableApprovedModules()) {
     is_reroute_available.availability = false;
   } else {
     is_reroute_available.availability = true;
