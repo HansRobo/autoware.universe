@@ -29,6 +29,8 @@ namespace fs = ::std::experimental::filesystem;
 #include <utility>
 #include <vector>
 
+
+
 namespace traffic_light
 {
 inline std::vector<float> toFloatVector(const std::vector<double> double_vector)
