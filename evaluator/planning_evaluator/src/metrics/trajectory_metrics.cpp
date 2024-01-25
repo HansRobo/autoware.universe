@@ -15,8 +15,7 @@
 #include "planning_evaluator/metrics/trajectory_metrics.hpp"
 
 #include "planning_evaluator/metrics/metrics_utils.hpp"
-#include "tier4_autoware_utils/tier4_autoware_utils.hpp"
-
+#include "tier4_autoware_utils/geometry/geometry.hpp"
 namespace planning_diagnostics
 {
 namespace metrics
@@ -126,7 +125,7 @@ Stat<double> calcTrajectoryLength(const Trajectory & traj)
 Stat<double> calcTrajectoryDuration(const Trajectory & traj)
 {
   double duration = 0.0;
-  for (size_t i = 0; i < traj.points.size() - 1; ++i) {
+  for (size_t i = 0; i + 1 < traj.points.size(); ++i) {
     const double length = calcDistance2d(traj.points.at(i), traj.points.at(i + 1));
     const double velocity = traj.points.at(i).longitudinal_velocity_mps;
     if (velocity != 0) {
@@ -159,7 +158,7 @@ Stat<double> calcTrajectoryAcceleration(const Trajectory & traj)
 Stat<double> calcTrajectoryJerk(const Trajectory & traj)
 {
   Stat<double> stat;
-  for (size_t i = 0; i < traj.points.size() - 1; ++i) {
+  for (size_t i = 0; i + 1 < traj.points.size(); ++i) {
     const double vel = traj.points.at(i).longitudinal_velocity_mps;
     if (vel != 0) {
       const double duration =
