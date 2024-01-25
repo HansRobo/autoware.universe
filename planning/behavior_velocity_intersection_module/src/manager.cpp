@@ -35,11 +35,10 @@ using tier4_autoware_utils::getOrDeclareParameter;
 IntersectionModuleManager::IntersectionModuleManager(rclcpp::Node & node)
 : SceneModuleManagerInterfaceWithRTC(
     node, getModuleName(),
-    getOrDeclareParameter<bool>(node, std::string(getModuleName()) + ".enable_rtc.intersection")),
+    getEnableRTC(node, std::string(getModuleName()) + ".enable_rtc.intersection")),
   occlusion_rtc_interface_(
     &node, "intersection_occlusion",
-    getOrDeclareParameter<bool>(
-      node, std::string(getModuleName()) + ".enable_rtc.intersection_to_occlusion"))
+    getEnableRTC(node, std::string(getModuleName()) + ".enable_rtc.intersection_to_occlusion"))
 {
   const std::string ns(getModuleName());
   auto & ip = intersection_param_;
@@ -61,6 +60,8 @@ IntersectionModuleManager::IntersectionModuleManager(rclcpp::Node & node)
   ip.common.max_jerk = getOrDeclareParameter<double>(node, ns + ".common.max_jerk");
   ip.common.delay_response_time =
     getOrDeclareParameter<double>(node, ns + ".common.delay_response_time");
+  ip.common.enable_pass_judge_before_default_stopline =
+    getOrDeclareParameter<bool>(node, ns + ".common.enable_pass_judge_before_default_stopline");
 
   ip.stuck_vehicle.turn_direction.left =
     getOrDeclareParameter<bool>(node, ns + ".stuck_vehicle.turn_direction.left");
@@ -74,10 +75,8 @@ IntersectionModuleManager::IntersectionModuleManager(rclcpp::Node & node)
     getOrDeclareParameter<double>(node, ns + ".stuck_vehicle.stuck_vehicle_detect_dist");
   ip.stuck_vehicle.stuck_vehicle_velocity_threshold =
     getOrDeclareParameter<double>(node, ns + ".stuck_vehicle.stuck_vehicle_velocity_threshold");
-  ip.stuck_vehicle.timeout_private_area =
-    getOrDeclareParameter<double>(node, ns + ".stuck_vehicle.timeout_private_area");
-  ip.stuck_vehicle.enable_private_area_stuck_disregard =
-    getOrDeclareParameter<bool>(node, ns + ".stuck_vehicle.enable_private_area_stuck_disregard");
+  ip.stuck_vehicle.disable_against_private_lane =
+    getOrDeclareParameter<bool>(node, ns + ".stuck_vehicle.disable_against_private_lane");
 
   ip.yield_stuck.turn_direction.left =
     getOrDeclareParameter<bool>(node, ns + ".yield_stuck.turn_direction.left");
@@ -94,8 +93,6 @@ IntersectionModuleManager::IntersectionModuleManager(rclcpp::Node & node)
     getOrDeclareParameter<double>(node, ns + ".collision_detection.collision_detection_hold_time");
   ip.collision_detection.min_predicted_path_confidence =
     getOrDeclareParameter<double>(node, ns + ".collision_detection.min_predicted_path_confidence");
-  ip.collision_detection.keep_detection_velocity_threshold = getOrDeclareParameter<double>(
-    node, ns + ".collision_detection.keep_detection_velocity_threshold");
   ip.collision_detection.velocity_profile.use_upstream =
     getOrDeclareParameter<bool>(node, ns + ".collision_detection.velocity_profile.use_upstream");
   ip.collision_detection.velocity_profile.minimum_upstream_velocity = getOrDeclareParameter<double>(
@@ -154,6 +151,8 @@ IntersectionModuleManager::IntersectionModuleManager(rclcpp::Node & node)
     getOrDeclareParameter<double>(node, ns + ".occlusion.creep_during_peeking.creep_velocity");
   ip.occlusion.peeking_offset =
     getOrDeclareParameter<double>(node, ns + ".occlusion.peeking_offset");
+  ip.occlusion.occlusion_required_clearance_distance =
+    getOrDeclareParameter<double>(node, ns + ".occlusion.occlusion_required_clearance_distance");
   ip.occlusion.possible_object_bbox =
     getOrDeclareParameter<std::vector<double>>(node, ns + ".occlusion.possible_object_bbox");
   ip.occlusion.ignore_parked_vehicle_speed_threshold =
@@ -181,8 +180,6 @@ void IntersectionModuleManager::launchNewModules(
   const auto lanelets =
     planning_utils::getLaneletsOnPath(path, lanelet_map, planner_data_->current_odometry->pose);
   // run occlusion detection only in the first intersection
-  // TODO(Mamoru Sobue): remove `enable_occlusion_detection` variable
-  const bool enable_occlusion_detection = intersection_param_.occlusion.enable;
   for (size_t i = 0; i < lanelets.size(); i++) {
     const auto ll = lanelets.at(i);
     const auto lane_id = ll.id();
@@ -201,7 +198,6 @@ void IntersectionModuleManager::launchNewModules(
     }
 
     const std::string location = ll.attributeOr("location", "else");
-    const bool is_private_area = (location.compare("private") == 0);
     const auto associative_ids =
       planning_utils::getAssociativeIntersectionLanelets(ll, lanelet_map, routing_graph);
     bool has_traffic_light = false;
@@ -213,8 +209,7 @@ void IntersectionModuleManager::launchNewModules(
     }
     const auto new_module = std::make_shared<IntersectionModule>(
       module_id, lane_id, planner_data_, intersection_param_, associative_ids, turn_direction,
-      has_traffic_light, enable_occlusion_detection, is_private_area, node_,
-      logger_.get_child("intersection_module"), clock_);
+      has_traffic_light, node_, logger_.get_child("intersection_module"), clock_);
     generateUUID(module_id);
     /* set RTC status as non_occluded status initially */
     const UUID uuid = getUUID(new_module->getModuleId());

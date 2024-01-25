@@ -17,7 +17,7 @@
 
 #include "behavior_path_avoidance_by_lane_change_module/data_structs.hpp"
 #include "behavior_path_avoidance_by_lane_change_module/interface.hpp"
-#include "behavior_path_planner/scene_module/lane_change/manager.hpp"
+#include "behavior_path_lane_change_module/manager.hpp"
 
 #include <rclcpp/rclcpp.hpp>
 
@@ -35,7 +35,7 @@ class AvoidanceByLaneChangeModuleManager : public LaneChangeModuleManager
 public:
   AvoidanceByLaneChangeModuleManager()
   : LaneChangeModuleManager(
-      "avoidance_by_lc", route_handler::Direction::NONE,
+      "avoidance_by_lane_change", route_handler::Direction::NONE,
       LaneChangeModuleType::AVOIDANCE_BY_LANE_CHANGE)
   {
   }

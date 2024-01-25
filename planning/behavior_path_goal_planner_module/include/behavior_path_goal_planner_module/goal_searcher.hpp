@@ -16,7 +16,7 @@
 #define BEHAVIOR_PATH_GOAL_PLANNER_MODULE__GOAL_SEARCHER_HPP_
 
 #include "behavior_path_goal_planner_module/goal_searcher_base.hpp"
-#include "behavior_path_planner/utils/occupancy_grid_based_collision_detector/occupancy_grid_based_collision_detector.hpp"
+#include "behavior_path_planner_common/utils/occupancy_grid_based_collision_detector/occupancy_grid_based_collision_detector.hpp"
 
 #include <memory>
 #include <vector>
@@ -35,8 +35,13 @@ public:
 
   GoalCandidates search() override;
   void update(GoalCandidates & goal_candidates) const override;
+
+  // todo(kosuke55):　Functions for this specific use should not be in the interface,
+  // so it is better to consider interface design when we implement other goal searchers.
   GoalCandidate getClosetGoalCandidateAlongLanes(
     const GoalCandidates & goal_candidates) const override;
+  bool isSafeGoalWithMarginScaleFactor(
+    const GoalCandidate & goal_candidate, const double margin_scale_factor) const override;
 
 private:
   void countObjectsToAvoid(

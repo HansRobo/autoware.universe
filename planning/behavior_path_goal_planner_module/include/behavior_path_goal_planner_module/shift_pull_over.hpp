@@ -16,7 +16,7 @@
 #define BEHAVIOR_PATH_GOAL_PLANNER_MODULE__SHIFT_PULL_OVER_HPP_
 
 #include "behavior_path_goal_planner_module/pull_over_planner_base.hpp"
-#include "behavior_path_planner/utils/occupancy_grid_based_collision_detector/occupancy_grid_based_collision_detector.hpp"
+#include "behavior_path_planner_common/utils/occupancy_grid_based_collision_detector/occupancy_grid_based_collision_detector.hpp"
 
 #include <lane_departure_checker/lane_departure_checker.hpp>
 
@@ -43,6 +43,8 @@ public:
 protected:
   PathWithLaneId generateReferencePath(
     const lanelet::ConstLanelets & road_lanes, const Pose & end_pose) const;
+  std::optional<PathWithLaneId> cropPrevModulePath(
+    const PathWithLaneId & prev_module_path, const Pose & shift_end_pose) const;
   std::optional<PullOverPath> generatePullOverPath(
     const lanelet::ConstLanelets & road_lanes, const lanelet::ConstLanelets & shoulder_lanes,
     const Pose & goal_pose, const double lateral_jerk) const;
