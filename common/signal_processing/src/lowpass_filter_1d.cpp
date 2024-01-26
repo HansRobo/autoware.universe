@@ -28,7 +28,7 @@ LowpassFilter1d::LowpassFilter1d(const double gain) : gain_(gain)
 
 void LowpassFilter1d::reset()
 {
-  x_ = {};
+  x_ = std::nullopt;
 }
 
 void LowpassFilter1d::reset(const double x)
@@ -36,7 +36,7 @@ void LowpassFilter1d::reset(const double x)
   x_ = x;
 }
 
-boost::optional<double> LowpassFilter1d::getValue() const
+std::optional<double> LowpassFilter1d::getValue() const
 {
   return x_;
 }
@@ -44,11 +44,11 @@ boost::optional<double> LowpassFilter1d::getValue() const
 double LowpassFilter1d::filter(const double u)
 {
   if (x_) {
-    const double ret = gain_ * x_.get() + (1.0 - gain_) * u;
+    const double ret = gain_ * x_.value() + (1.0 - gain_) * u;
     x_ = ret;
-    return x_.get();
+    return x_.value();
   }
 
   x_ = u;
-  return x_.get();
+  return x_.value();
 }
