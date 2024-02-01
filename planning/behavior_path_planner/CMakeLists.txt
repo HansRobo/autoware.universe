@@ -7,6 +7,7 @@ autoware_package()
 find_package(OpenCV REQUIRED)
 find_package(magic_enum CONFIG REQUIRED)
 
+
 ament_auto_add_library(${PROJECT_NAME}_lib SHARED
   src/planner_manager.cpp
   src/behavior_path_planner_node.cpp
