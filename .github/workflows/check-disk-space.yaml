@@ -1,0 +1,11 @@
+name: check-build-depends
+
+on:
+  pull_request:
+
+jobs:
+  check-disk-space:
+    runs-on: ubuntu-latest
+    steps:
+      - name: df -h
+        run: df -h
