@@ -16,7 +16,7 @@ jobs:
   build-and-test-differential:
     needs: prevent-no-label-execution
     if: ${{ needs.prevent-no-label-execution.outputs.run == 'true' }}
-    runs-on: [self-hosted, linux, X64]
+    runs-on: ubuntu-latest
     container: ${{ matrix.container }}${{ matrix.container-suffix }}
     strategy:
       fail-fast: false
@@ -31,6 +31,17 @@ jobs:
             container: ghcr.io/autowarefoundation/autoware-universe:humble-latest
             build-depends-repos: build_depends.repos
     steps:
+      - name: Show disk space
+        run: df -h
+
+      - name: Free disk space (Ubuntu)
+        uses: jlumbroso/free-disk-space@v1.2.0
+        with:
+          tool-cache: false
+          dotnet: false
+          swap-storage: false
+          large-packages: false
+          
       - name: Check out repository
         uses: actions/checkout@v3
         with:
@@ -68,6 +79,9 @@ jobs:
           fail_ci_if_error: false
           verbose: true
           flags: differential
+          
+      - name: Show disk space
+        run: df -h
 
   clang-tidy-differential:
     runs-on: [self-hosted, linux, X64]
