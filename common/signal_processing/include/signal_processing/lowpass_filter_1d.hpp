@@ -15,7 +15,8 @@
 #ifndef SIGNAL_PROCESSING__LOWPASS_FILTER_1D_HPP_
 #define SIGNAL_PROCESSING__LOWPASS_FILTER_1D_HPP_
 
-#include <boost/optional.hpp>
+// #include <boost/optional/optional_io.hpp>
+#include <optional>
 
 namespace signal_processing
 {
@@ -29,7 +30,7 @@ double lowpassFilter(const double current_val, const double prev_val, const doub
 class LowpassFilter1d
 {
 private:
-  boost::optional<double> x_;  //!< @brief current filtered value
+  std::optional<double> x_;  //!< @brief current filtered value
   double gain_;                //!< @brief gain value of first-order low-pass filter
 
 public:
@@ -38,7 +39,7 @@ public:
   void reset();
   void reset(const double x);
 
-  boost::optional<double> getValue() const;
+  std::optional<double> getValue() const;
   double filter(const double u);
 };
 
