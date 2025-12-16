@@ -28,4 +28,4 @@ jobs:
           cspell-json-url: https://raw.githubusercontent.com/tier4/autoware-spell-check-dict/main/.cspell.json
           dict-packages: |
             https://github.com/tier4/cspell-dicts
-            ttps://github.com/tier4/autoware-spell-check-dict
+            https://github.com/tier4/autoware-spell-check-dict
